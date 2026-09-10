@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Special Surprise for Shahd ❤️</title>
+  
+  <!-- Google Fonts for cute, warm typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Floating background particles -->
+  <div class="floating-hearts-container" id="floating-hearts" aria-hidden="true"></div>
+  
+  <!-- Canvas for celebration confetti -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Playful Toast for dodging No button -->
+  <div id="playful-toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Main Card Container -->
+  <main class="card-wrapper">
+    <div class="card" id="app-card">
+      
+      <!-- ==========================================
+           PAGE 1: THE INVITATION
+           ========================================== -->
+      <section class="step-page active" id="step-1" aria-labelledby="step1-title">
+        <div class="card-emoji-header">
+          <span class="animated-avatar">💌</span>
+        </div>
+        
+        <h1 id="step1-title" class="title">Shahd, I miss you so much 🥹❤️</h1>
+        <p class="subtitle">So... can we meet? 👀</p>
+
+        <div class="btn-group" id="btn-group-step1">
+          <button type="button" class="btn btn-yes" id="yes-btn">
+            <span>Yes</span> <span class="btn-heart">❤️</span>
+          </button>
+          
+          <button type="button" class="btn btn-no" id="no-btn">
+            <span>No</span> <span class="btn-emoji">🙈</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           PAGE 2: DATE SELECTION
+           ========================================== -->
+      <section class="step-page" id="step-2" aria-labelledby="step2-title">
+        <div class="card-emoji-header">
+          <span class="animated-avatar">🗓️</span>
+        </div>
+        
+        <h2 id="step2-title" class="title">I knew you'd say yes 🥹❤️</h2>
+        <p class="subtitle">Pick a day that works for you:</p>
+
+        <!-- Calendar Container -->
+        <div class="calendar-card">
+          <div class="calendar-header">
+            <span class="calendar-title">September 2026 🌸</span>
+            <span class="calendar-badge">Choose 1 Day</span>
+          </div>
+
+          <div class="calendar-grid" id="calendar-grid">
+            <!-- Weekday headers -->
+            <div class="cal-day-label">Sun</div>
+            <div class="cal-day-label">Mon</div>
+            <div class="cal-day-label">Tue</div>
+            <div class="cal-day-label">Wed</div>
+            <div class="cal-day-label">Thu</div>
+            <div class="cal-day-label">Fri</div>
+            <div class="cal-day-label">Sat</div>
+            <!-- Calendar days generated dynamically via script.js -->
+          </div>
+          
+          <div class="calendar-legend">
+            <span class="legend-item"><span class="legend-dot active"></span> Available (Sept 10 - 18)</span>
+            <span class="legend-item"><span class="legend-dot muted"></span> Unavailable</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Date Feedback -->
+        <div class="selection-feedback" id="date-feedback">
+          Please select a date above ✨
+        </div>
+
+        <button type="button" class="btn btn-primary" id="confirm-date-btn" disabled>
+          Confirm Date ❤️
+        </button>
+      </section>
+
+      <!-- ==========================================
+           PAGE 3: MEETING PLACE
+           ========================================== -->
+      <section class="step-page" id="step-3" aria-labelledby="step3-title">
+        <div class="card-emoji-header">
+          <span class="animated-avatar">✨</span>
+        </div>
+        
+        <h2 id="step3-title" class="title">One last question... 👀</h2>
+        <p class="subtitle">Where should we meet?</p>
+
+        <!-- Place Options -->
+        <div class="options-container" role="radiogroup" aria-label="Meeting place options">
+          
+          <button type="button" class="place-card" data-place="at your place 🏠" role="radio" aria-checked="false">
+            <div class="place-icon">🏠</div>
+            <div class="place-info">
+              <div class="place-name">At your place 🏠</div>
+              <div class="place-desc">Comfy, cozy, and tea/snacks together!</div>
+            </div>
+            <div class="place-check" aria-hidden="true">✓</div>
+          </button>
+
+          <button type="button" class="place-card" data-place="at my place 🏡" role="radio" aria-checked="false">
+            <div class="place-icon">🏡</div>
+            <div class="place-info">
+              <div class="place-name">At my place 🏡</div>
+              <div class="place-desc">I'll prepare good food & yummy treats!</div>
+            </div>
+            <div class="place-check" aria-hidden="true">✓</div>
+          </button>
+
+          <button type="button" class="place-card" data-place="let's go out 🌷" role="radio" aria-checked="false">
+            <div class="place-icon">🌷</div>
+            <div class="place-info">
+              <div class="place-name">Let's go out 🌷</div>
+              <div class="place-desc">A fun walk, cute cafe, and adventure!</div>
+            </div>
+            <div class="place-check" aria-hidden="true">✓</div>
+          </button>
+
+        </div>
+
+        <button type="button" class="btn btn-primary" id="confirm-place-btn" disabled>
+          Confirm & Send ❤️
+        </button>
+      </section>
+
+      <!-- ==========================================
+           FINAL CELEBRATION / SUMMARY
+           ========================================== -->
+      <section class="step-page" id="step-final" aria-labelledby="final-title">
+        <div class="card-emoji-header celebration-pulse">
+          <span class="animated-avatar">🎉</span>
+        </div>
+
+        <div class="ticket-card">
+          <h2 id="final-title" class="final-heading">Yay! It's a date ❤️</h2>
+          <div class="ticket-divider"></div>
+          <p class="final-line final-date" id="final-date-text">
+            I'll see you on September 14, 2026!
+          </p>
+          <p class="final-line final-place" id="final-place-text">
+            Let's meet at your place 🏠
+          </p>
+          <div class="ticket-badge">Official Invitation Locked In 🔒✨</div>
+        </div>
+
+        <p class="heartfelt-note">
+          I'm counting down the days! Can't wait to see your smile again, Shahd 🥰
+        </p>
+
+        <!-- Notification Status Message -->
+        <div class="notification-status" id="notification-status" role="status">
+          <span class="status-icon">💌</span>
+          <span class="status-text" id="status-text">Saving your selections...</span>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
