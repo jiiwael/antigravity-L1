@@ -3,47 +3,29 @@
  * 💌 A SPECIAL SURPRISE FOR SHAHD — SCRIPT.JS
  * ============================================================================
  * 
- * 🛠️ HOW TO RECEIVE SHAHD'S SELECTIONS (EMAIL / NOTIFICATION SETUP):
+ * 🌐 GITHUB PAGES & FORMSPREE SETUP:
  * ----------------------------------------------------------------------------
- * By default, browsers cannot send emails directly without a backend or form
- * service. This website is 100% ready to send you notifications using any free
- * form service!
+ * This website runs 100% statically in the browser (compatible with GitHub Pages).
+ * No server or backend needed.
  * 
- * 👉 OPTION 1: Formspree (Free & Easiest — sends straight to your email)
- *    1. Go to https://formspree.io and create a free account.
- *    2. Click "+ New Form" and copy the endpoint URL they give you.
- *       (It looks like: "https://formspree.io/f/xyzabcdr")
- *    3. Paste it below into `CONFIG.formspreeEndpoint`.
+ * The final selections:
+ *  - answer: "YES"
+ *  - selected_date: [actual chosen date, e.g. "September 14, 2026"]
+ *  - meeting_place: [actual chosen place, e.g. "at your place 🏠"]
  * 
- * 👉 OPTION 2: Web3Forms (No account needed — 100% free)
- *    1. Go to https://web3forms.com and type in your email to get an Access Key.
- *    2. Paste your key below into `CONFIG.web3FormsKey`.
+ * Are submitted via a normal HTML form POST to:
+ * https://formspree.io/f/mbgjqqyv
  * 
- * 👉 OPTION 3: Custom Webhook / Backend
- *    Paste your custom API URL into `CONFIG.customWebhookUrl`.
- * 
- * 💡 WHAT HAPPENS IF YOU LEAVE THIS UNCONFIGURED?
- *    Don't worry! Every selection is ALWAYS safely saved in the browser's
- *    `localStorage` under the key "shahd_date_invitation" and printed to
- *    the developer console, so no data is ever lost.
+ * Form submissions use AJAX/fetch with `Accept: application/json` so Shahd
+ * never sees a blank Formspree page and instead receives the cute celebration screen!
  * ============================================================================
  */
-
-const CONFIG = {
-  // Option 1: Paste your Formspree endpoint URL here:
-  formspreeEndpoint: "", 
-
-  // Option 2: Paste your Web3Forms Access Key here:
-  web3FormsKey: "",
-
-  // Option 3: Or paste any custom backend / Discord / Slack webhook URL:
-  customWebhookUrl: "",
-};
 
 /* ============================================================================
  * STATE MANAGEMENT
  * ============================================================================ */
 const state = {
+  selectedAnswer: "Yes",
   selectedDate: null,     // e.g. "September 14, 2026"
   selectedPlace: null,    // e.g. "at your place 🏠"
 };
@@ -246,6 +228,13 @@ confirmDateBtn.addEventListener('click', () => {
 /* ============================================================================
  * PAGE 3: MEETING PLACE SELECTION
  * ============================================================================ */
+/* ============================================================================
+ * PAGE 3 & FORMSPREE SUBMISSION (GitHub Pages Compatible)
+ * ============================================================================ */
+const meetupForm = document.getElementById('meetup-form');
+const formErrorBanner = document.getElementById('form-error-banner');
+const btnSubmitText = document.getElementById('btn-submit-text');
+
 placeCards.forEach(card => {
   card.addEventListener('click', () => {
     // Single-selection: remove selected from all other cards
@@ -259,116 +248,88 @@ placeCards.forEach(card => {
     card.setAttribute('aria-checked', 'true');
     state.selectedPlace = card.dataset.place;
 
+    // Enable submit button and clear any previous error banner
     confirmPlaceBtn.disabled = false;
+    if (formErrorBanner) {
+      formErrorBanner.style.display = 'none';
+    }
   });
 });
 
-confirmPlaceBtn.addEventListener('click', async () => {
+meetupForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
   if (!state.selectedDate || !state.selectedPlace) return;
 
-  // Format final messages as requested
-  // "Yay! It's a date ❤️"
-  // "I'll see you on September 14, 2026!"
-  // "Let's meet at your place 🏠"
-  finalDateText.textContent = `I'll see you on ${state.selectedDate}!`;
-  finalPlaceText.textContent = `Let's meet ${state.selectedPlace}`;
+  // Populate dynamic selected values into the HTML form inputs
+  const inputAnswer = document.getElementById('form-input-answer');
+  const inputDate = document.getElementById('form-input-date');
+  const inputPlace = document.getElementById('form-input-place');
 
-  // Transition to celebration screen
-  goToStep(stepFinal);
+  if (inputAnswer) inputAnswer.value = "YES";
+  if (inputDate) inputDate.value = state.selectedDate;
+  if (inputPlace) inputPlace.value = state.selectedPlace;
 
-  // Launch celebration confetti!
-  startConfetti();
+  // Set loading state on button
+  confirmPlaceBtn.disabled = true;
+  if (btnSubmitText) {
+    btnSubmitText.textContent = "Sending... 💌";
+  }
+  if (formErrorBanner) {
+    formErrorBanner.style.display = 'none';
+  }
 
-  // Handle data notification dispatch
-  await handleDataSubmission();
-});
+  const formData = new FormData(meetupForm);
 
-/* ============================================================================
- * DATA SUBMISSION / NOTIFICATION PIPELINE
- * ============================================================================ */
-async function handleDataSubmission() {
-  const payload = {
-    friend: "Shahd",
-    selectedDate: state.selectedDate,
-    meetingPlace: state.selectedPlace,
-    submittedAt: new Date().toISOString(),
-    localTime: new Date().toLocaleString(),
-    message: `Shahd confirmed a meetup on ${state.selectedDate} (${state.selectedPlace})! ❤️`,
-  };
-
-  // 1. Always save in browser's localStorage for safety
   try {
-    localStorage.setItem('shahd_date_invitation', JSON.stringify(payload));
-    console.log("💌 [SUCCESS] Saved to localStorage:", payload);
-  } catch (err) {
-    console.warn("Could not save to localStorage:", err);
-  }
-
-  // 2. Check if host configured Formspree, Web3Forms, or Custom Webhook
-  let endpoint = null;
-  let requestOptions = null;
-
-  if (CONFIG.formspreeEndpoint && CONFIG.formspreeEndpoint.trim() !== "") {
-    endpoint = CONFIG.formspreeEndpoint.trim();
-    requestOptions = {
-      method: "POST",
+    // Submit using normal HTML form POST via Fetch to Formspree endpoint
+    const response = await fetch(meetupForm.action, {
+      method: meetupForm.method,
+      body: formData,
       headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify(payload)
-    };
-  } else if (CONFIG.web3FormsKey && CONFIG.web3FormsKey.trim() !== "") {
-    endpoint = "https://api.web3forms.com/submit";
-    requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({
-        access_key: CONFIG.web3FormsKey.trim(),
-        subject: `❤️ Shahd picked a date: ${state.selectedDate}!`,
-        from_name: "Shahd Meetup Surprise",
-        ...payload
-      })
-    };
-  } else if (CONFIG.customWebhookUrl && CONFIG.customWebhookUrl.trim() !== "") {
-    endpoint = CONFIG.customWebhookUrl.trim();
-    requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    };
-  }
-
-  // 3. Dispatch HTTP request if endpoint is provided
-  if (endpoint) {
-    statusText.textContent = "Sending notification to your host... 💌";
-    try {
-      const response = await fetch(endpoint, requestOptions);
-      if (response.ok) {
-        notificationStatus.classList.add('success');
-        statusText.textContent = "Confirmed & notification sent! 💌✨";
-      } else {
-        throw new Error(`Server returned ${response.status}`);
+        'Accept': 'application/json'
       }
-    } catch (error) {
-      console.warn("Network notification attempt failed, but response is safely saved locally:", error);
-      notificationStatus.classList.add('success');
-      statusText.textContent = "Saved locally! (Ready to connect email endpoint) 💌";
+    });
+
+    if (response.ok) {
+      // 1. Populate final cute confirmation message with the ACTUAL selected values
+      finalDateText.textContent = `I'll see you on ${state.selectedDate}!`;
+      finalPlaceText.textContent = `Let's meet ${state.selectedPlace}`;
+
+      // 2. Smoothly transition to the celebration screen (no blank Formspree page!)
+      goToStep(stepFinal);
+
+      // 3. Trigger celebration confetti
+      startConfetti();
+
+      // 4. Save to localStorage as a client-side backup
+      try {
+        localStorage.setItem('shahd_date_invitation', JSON.stringify({
+          answer: "YES",
+          selectedDate: state.selectedDate,
+          meetingPlace: state.selectedPlace,
+          submittedAt: new Date().toISOString()
+        }));
+      } catch (err) {
+        console.warn("localStorage note:", err);
+      }
+    } else {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Server returned ${response.status}`);
     }
-  } else {
-    // Graceful unconfigured state
-    notificationStatus.classList.add('success');
-    statusText.textContent = "Selections saved! (Backend endpoint ready in script.js) 💌";
-    console.info(
-      "%c💌 Shahd's Response Recorded!",
-      "color: #ff5e87; font-size: 16px; font-weight: bold;"
-    );
-    console.table(payload);
+  } catch (error) {
+    console.error("Formspree submission error:", error);
+
+    // Gracefully show error banner and allow Shahd to try again
+    if (formErrorBanner) {
+      formErrorBanner.style.display = 'block';
+    }
+    if (btnSubmitText) {
+      btnSubmitText.textContent = "Try Again ❤️";
+    }
+    confirmPlaceBtn.disabled = false;
   }
-}
+});
 
 /* ============================================================================
  * BACKGROUND FLOATING HEARTS GENERATOR

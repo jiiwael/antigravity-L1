@@ -34,8 +34,11 @@
           <span class="animated-avatar">💌</span>
         </div>
         
-        <h1 id="step1-title" class="title">Shahd, I miss you so much 🥹❤️</h1>
-        <p class="subtitle">So... can we meet? 👀</p>
+        <h1 id="step1-title" class="title">Shahd, I miss you. 🥹❤️</h1>
+        <p class="subtitle">
+          And honestly… I think we should do something about that.<br />
+          Wanna meet me? 👀💗
+        </p>
 
         <div class="btn-group" id="btn-group-step1">
           <button type="button" class="btn btn-yes" id="yes-btn">
@@ -105,41 +108,54 @@
         <h2 id="step3-title" class="title">One last question... 👀</h2>
         <p class="subtitle">Where should we meet?</p>
 
-        <!-- Place Options -->
-        <div class="options-container" role="radiogroup" aria-label="Meeting place options">
-          
-          <button type="button" class="place-card" data-place="at your place 🏠" role="radio" aria-checked="false">
-            <div class="place-icon">🏠</div>
-            <div class="place-info">
-              <div class="place-name">At your place 🏠</div>
-              <div class="place-desc">Comfy, cozy, and tea/snacks together!</div>
-            </div>
-            <div class="place-check" aria-hidden="true">✓</div>
+        <!-- Normal HTML Form for Formspree (compatible with GitHub Pages) -->
+        <form id="meetup-form" action="https://formspree.io/f/mbgjqqyv" method="POST">
+          <input type="hidden" name="answer" id="form-input-answer" value="YES" />
+          <input type="hidden" name="selected_date" id="form-input-date" value="" />
+          <input type="hidden" name="meeting_place" id="form-input-place" value="" />
+          <input type="hidden" name="_subject" value="❤️ Shahd replied YES to meeting up!" />
+
+          <!-- Place Options -->
+          <div class="options-container" role="radiogroup" aria-label="Meeting place options">
+            
+            <button type="button" class="place-card" data-place="at your place 🏠" role="radio" aria-checked="false">
+              <div class="place-icon">🏠</div>
+              <div class="place-info">
+                <div class="place-name">At your place 🏠</div>
+                <div class="place-desc">Comfy, cozy, and tea/snacks together!</div>
+              </div>
+              <div class="place-check" aria-hidden="true">✓</div>
+            </button>
+
+            <button type="button" class="place-card" data-place="at my place 🏡" role="radio" aria-checked="false">
+              <div class="place-icon">🏡</div>
+              <div class="place-info">
+                <div class="place-name">At my place 🏡</div>
+                <div class="place-desc">I'll prepare good food & yummy treats!</div>
+              </div>
+              <div class="place-check" aria-hidden="true">✓</div>
+            </button>
+
+            <button type="button" class="place-card" data-place="let's go out 🌷" role="radio" aria-checked="false">
+              <div class="place-icon">🌷</div>
+              <div class="place-info">
+                <div class="place-name">Let's go out 🌷</div>
+                <div class="place-desc">A fun walk, cute cafe, and adventure!</div>
+              </div>
+              <div class="place-check" aria-hidden="true">✓</div>
+            </button>
+
+          </div>
+
+          <!-- Submission Error Message (graceful fallback) -->
+          <div class="error-banner" id="form-error-banner" style="display: none;" role="alert">
+            <span>🥺 Couldn't send your reply right now. Please check your connection and try again!</span>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="confirm-place-btn" disabled>
+            <span id="btn-submit-text">Confirm & Send ❤️</span>
           </button>
-
-          <button type="button" class="place-card" data-place="at my place 🏡" role="radio" aria-checked="false">
-            <div class="place-icon">🏡</div>
-            <div class="place-info">
-              <div class="place-name">At my place 🏡</div>
-              <div class="place-desc">I'll prepare good food & yummy treats!</div>
-            </div>
-            <div class="place-check" aria-hidden="true">✓</div>
-          </button>
-
-          <button type="button" class="place-card" data-place="let's go out 🌷" role="radio" aria-checked="false">
-            <div class="place-icon">🌷</div>
-            <div class="place-info">
-              <div class="place-name">Let's go out 🌷</div>
-              <div class="place-desc">A fun walk, cute cafe, and adventure!</div>
-            </div>
-            <div class="place-check" aria-hidden="true">✓</div>
-          </button>
-
-        </div>
-
-        <button type="button" class="btn btn-primary" id="confirm-place-btn" disabled>
-          Confirm & Send ❤️
-        </button>
+        </form>
       </section>
 
       <!-- ==========================================
@@ -166,10 +182,10 @@
           I'm counting down the days! Can't wait to see your smile again, Shahd 🥰
         </p>
 
-        <!-- Notification Status Message -->
-        <div class="notification-status" id="notification-status" role="status">
+        <!-- Notification / Submission Status -->
+        <div class="notification-status success" id="notification-status" role="status">
           <span class="status-icon">💌</span>
-          <span class="status-text" id="status-text">Saving your selections...</span>
+          <span class="status-text" id="status-text">Confirmed & sent with love! ✨</span>
         </div>
       </section>
 

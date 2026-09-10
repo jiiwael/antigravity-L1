@@ -623,6 +623,33 @@ body {
   color: #2e7d32;
 }
 
+.hidden-form {
+  display: none;
+}
+
+.error-banner {
+  background: #fff0f3;
+  color: #d6336c;
+  border: 1.5px solid #ffccd5;
+  border-radius: var(--radius-sm);
+  padding: 11px 16px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-top: 14px;
+  line-height: 1.45;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(214, 51, 108, 0.08);
+  animation: shakeSoftly 0.4s ease;
+}
+
+@keyframes shakeSoftly {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+
 /* =========================================================
    RESPONSIVE ADJUSTMENTS
    ========================================================= */
